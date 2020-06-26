@@ -40,9 +40,16 @@ int main(void)
          0.5f, -0.5f,
     };
     unsigned int buffer;
-    glGenBuffers(1, &buffer);
+    glGenBuffers(
+        1, // count to create
+        &buffer // result name
+    );
+    // make current
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    // copy data
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+
 
     // Enable attribute0
     glEnableVertexAttribArray(0); // first attribute
@@ -57,7 +64,6 @@ int main(void)
         0  // offset
     );
        
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -65,7 +71,10 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 
+            0,  // starting index in the enabled arrays
+            3   // the number of indices to be rendered
+        );
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
