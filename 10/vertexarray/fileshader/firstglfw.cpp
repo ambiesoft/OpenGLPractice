@@ -9,10 +9,10 @@
 #include <GLFW/glfw3.h>
 
 #define ASSERT_GL(x) do { if(!(x)) { __debugbreak(); } } while(false)
-#define CALLGL(x) do {              \
-    ClearGLError();                 \
-    x;                              \
-    ASSERT_GL(LogGLCall(#x, __FILE__, __LINE__));         \
+#define CALLGL(x) do {                                      \
+    ClearGLError();                                         \
+    x;                                                      \
+    ASSERT_GL(LogGLCall(#x, __FILE__, __LINE__));           \
 } while(false)
 
 static void ClearGLError()
@@ -20,21 +20,28 @@ static void ClearGLError()
     while (glGetError() != GL_NO_ERROR)
         ;
 }
+static std::string GetGLErrorString(GLenum error)
+{
+    return (const char*)gluErrorString(error);
+}
 static bool LogGLCall(const char* funcname, const char* filename, int line)
 {
     while (GLenum error = glGetError())
     {
-        std::cerr << "[OpenGL error]" << "(" << error << "):" << 
+        std::cerr << "[OpenGL error]" << "(" << error << "[" << GetGLErrorString(error) << "]" << 
+            "):" << 
             funcname << " " << filename << ":" << line << std::endl;
         return false;
     }
     return true;
 }
+
 struct ShaderProgramSources
 {
     std::string VertexSource;
     std::string FragmentSource;
 };
+
 static ShaderProgramSources ParseShader(const std::string& filepath)
 {
     std::ifstream stream(filepath);
@@ -151,10 +158,13 @@ int main(void)
         std::cerr << "Error" << std::endl;
         return 1;
     }
+    
     // test glew functions
-    unsigned int a;
-    glGenBuffers(1, &a);
-    std::cout << glGetString(GL_VERSION) << std::endl;
+    {
+        unsigned int a;
+        glGenBuffers(1, &a);
+        std::cout << glGetString(GL_VERSION) << std::endl;
+    }
 
     // create buffer
     float positions[] = {
@@ -211,10 +221,13 @@ int main(void)
         GL_STATIC_DRAW));
 
     ShaderProgramSources source = ParseShader("res/shaders/Basic.shader");
-    std::cout << "VERTEX" << '\n';
+    std::cout << "VERTEX >>>>" << '\n';
     std::cout << source.VertexSource << '\n';
-    std::cout << "FRAGMENT" << '\n';
+    std::cout << "<<<< VERTEX" << '\n';
+    
+    std::cout << "FRAGMENT >>>>" << '\n';
     std::cout << source.FragmentSource << '\n';
+    std::cout << "<<<< FRAGMENT" << '\n';
 
     GLuint shader = CreateShader(source.VertexSource, source.FragmentSource);
     CALLGL(glUseProgram(shader));
