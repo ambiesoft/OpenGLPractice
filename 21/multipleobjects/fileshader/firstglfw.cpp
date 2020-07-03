@@ -82,11 +82,11 @@ int main(void)
         };
         assert(sizeof(positions) == (_countof(positions) * sizeof(float)));
 
-        CALLGL(glDisable(GL_BLEND));
-        CALLGL(glBlendFunc(GL_ONE, GL_ZERO));
+        //CALLGL(glDisable(GL_BLEND));
+        //CALLGL(glBlendFunc(GL_ONE, GL_ZERO));
 
-        // CALLGL(glEnable(GL_BLEND));
-        // CALLGL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+         CALLGL(glEnable(GL_BLEND));
+         CALLGL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 
         // Vertex Array Object
